@@ -2,7 +2,7 @@
   "name": "meet",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://cannoahgkt.github.io/MEET_APP/",
+  "homepage": "https://cannoahgkt.github.io/MEET_APP",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
