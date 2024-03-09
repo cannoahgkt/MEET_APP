@@ -28,3 +28,6 @@ Feature: Filter Events By City
 User Story: As a user, I should be able to filter events by city so that I can see events happening in a specific location.
 Scenarios:
 Scenario 1: When a user opens the events page, they should see events from all cities by default. They should have the option to search for a specific city and filter the events accordingly.
+
+Serverless functions:
+Serverless functions will play a pivotal role in the Meet app, particularly in managing user authentication and access to calendar events sourced from the Google Calendar API. These functions will handle the authorization process, ensuring that users have the necessary permissions to retrieve event data and interact with the app's features securely. By utilizing serverless technology, we can avoid the overhead of maintaining a traditional server infrastructure and instead focus on efficient, scalable solutions. In this context, AWS Lambda will be leveraged as the cloud-service provider for deploying these serverless functions, enhancing the app's scalability and cost-effectiveness while maintaining robust security measures.
