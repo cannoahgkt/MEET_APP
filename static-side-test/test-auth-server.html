@@ -48,7 +48,7 @@
       const getAuthUrlButton = document.getElementById("getAuthUrlButton");
       const resultElement = document.getElementById("result");
       const resultLink = document.getElementById("authURL");
-      // Replace this with your own endpoint
+      
       const getAuthURL =
         "https://us34ex2k8k.execute-api.eu-central-1.amazonaws.com/dev/api/get-auth-url";
 
@@ -97,14 +97,28 @@
       getEvents.onclick = function () {
         const { access_token } = JSON.parse(accessTokenElement.innerText);
         const eventRequest = getCalendarEvents + "/" + access_token;
-        fetch(eventRequest)
-          .then(function (response) {
+    
+      
+        console.log("Event Request URL:", eventRequest);
+    
+       fetch(eventRequest)
+        .then(function (response) {
+          
+            console.log("Response Status:", response.status);
+            
             return response.json();
-          })
-          .then(function (json) {
+        })
+        .then(function (json) {
+        
+            console.log("Response Data:", json);
+            
             events.innerText = JSON.stringify(json, null, 2);
-          });
-      };
+        })
+        .catch(function (error) {
+    
+            console.error("Fetch Error:", error);
+        });
+    };
     </script>
   </body>
 </html>
