@@ -1,33 +1,41 @@
-Feature: Sign Up
+Project Features & Scenarios
 
-User Story: As a new user, I should be able to sign up for an account so that I can access the app's features.
-Scenarios:
-Scenario 1: When a new user navigates to the sign-up page, they should be able to register by providing their email and password. Upon successful registration, they should be redirected to the login page.
-Feature: Log In
-
-User Story: As a registered user, I should be able to log in to my account so that I can access my personalized content.
-Scenarios:
-Scenario 1: When a registered user visits the login page, they should be able to enter their credentials and log in. After successful authentication, they should be redirected to the home page.
-Feature: Create Event
-
-User Story: As a user, I should be able to create a new event so that I can schedule meetings with others.
-Scenarios:
-Scenario 1: When a user is logged in, they should have the option to create a new event. Upon filling in the event details and submitting the form, the event should be created and displayed in the list of upcoming events.
-Feature: Join Event
-
-User Story: As a user, I should be able to join an existing event so that I can participate in scheduled meetings.
-Scenarios:
-Scenario 1: When a user views the details of an event, they should have the option to join the event. Upon clicking the join button, their participation should be confirmed, and their name should be added to the list of participants.
-Feature: View Events
-
-User Story: As a user, I should be able to view upcoming events so that I can plan my schedule accordingly.
-Scenarios:
-Scenario 1: When a user logs in, they should be able to see a list of upcoming events displayed on the home page. Each event should include details such as date, time, and location.
 Feature: Filter Events By City
 
-User Story: As a user, I should be able to filter events by city so that I can see events happening in a specific location.
-Scenarios:
-Scenario 1: When a user opens the events page, they should see events from all cities by default. They should have the option to search for a specific city and filter the events accordingly.
+Scenario: When user hasn’t searched for a city, show upcoming events from all cities. Given the events app is open When I view the list of upcoming events Then I should see events from all cities
 
-Serverless functions:
-Serverless functions will play a pivotal role in the Meet app, particularly in managing user authentication and access to calendar events sourced from the Google Calendar API. These functions will handle the authorization process, ensuring that users have the necessary permissions to retrieve event data and interact with the app's features securely. By utilizing serverless technology, we can avoid the overhead of maintaining a traditional server infrastructure and instead focus on efficient, scalable solutions. In this context, AWS Lambda will be leveraged as the cloud-service provider for deploying these serverless functions, enhancing the app's scalability and cost-effectiveness while maintaining robust security measures.
+Scenario: User should see a list of suggestions when they search for a city. Given the events app is open When I start typing in the city search bar Then I should see a list of suggested cities
+
+Scenario: User can select a city from the suggested list. Given the events app is open When I select a city from the suggested list Then the events list should be filtered for the selected city
+
+Feature: Show/Hide Event Details
+
+Scenario: An event element is collapsed by default. Given the events app is open When I view the list of events Then each event element should be collapsed
+
+Scenario: User can expand an event to see details. Given the events app is open When I click on an event element Then the details of that event should be visible
+
+Scenario: User can collapse an event to hide details. Given the events app is open And an event details are visible When I click on the collapse button Then the details of that event should be hidden
+
+Feature: Specify Number of Events
+
+Scenario: When user hasn’t specified a number, 32 events are shown by default. Given the events app is open When I view the list of events Then I should see 32 events displayed
+
+Scenario: User can change the number of events displayed. Given the events app is open When I specify the number of events as 50 Then I should see 50 events displayed
+
+Feature: Use the App When Offline
+
+Scenario: Show cached data when there’s no internet connection. Given the events app is open And there is no internet connection When I view the list of events Then I should see cached event data
+
+Scenario: Show error when user changes search settings (city, number of events). Given the events app is open And there is no internet connection When I try to change search settings Then I should see an error message
+
+Feature: Add an App Shortcut to the Home Screen
+
+Scenario: User can install the meet app as a shortcut on their device home screen. Given the events app is open When I choose to add the app to the home screen Then a shortcut to the meet app should be added to the device home screen
+
+Feature: Display Charts Visualizing Event Details
+
+Scenario: Show a chart with the number of upcoming events in each city. Given the events app is open When I navigate to the charts section Then I should see a chart displaying the number of upcoming events in each city
+
+Using serverless functions:
+
+These serverless functions will be responsible for securely managing user access, obtaining and refreshing OAuth2 tokens, and ensuring the security of interactions between your React application and the Google Calendar API. The serverless architecture offers benefits such as easy scalability, efficient resource utilization, and cost-effectiveness, as you only pay for the actual execution of functions rather than maintaining a dedicated server infrastructure
