@@ -12,6 +12,17 @@ const checkToken = async (accessToken) => {
   return result;
 };
 
+const getToken = async (code) => {
+  const encodeCode = encodeURIComponent(code);
+  const response = await fetch(
+    'YOUR_GET_ACCESS_TOKEN_ENDPOINT' + '/' + encodeCode
+  );
+  const { access_token } = await response.json();
+  access_token && localStorage.setItem("access_token", access_token);
+
+  return access_token;
+};
+
 const tokenCheck = accessToken && (await checkToken(accessToken));
 
   if (!accessToken || tokenCheck.error) {
@@ -67,6 +78,20 @@ export const getEvents = async () => {
   }
 };
 
+const removeQuery = () => {
+  let newurl;
+  if (window.history.pushState && window.location.pathname) {
+    newurl =
+      window.location.protocol +
+      "//" +
+      window.location.host +
+      window.location.pathname;
+    window.history.pushState("", "", newurl);
+  } else {
+    newurl = window.location.protocol + "//" + window.location.host;
+    window.history.pushState("", "", newurl);
+  }
+};
 
 
 export const getAccessToken = async () => {
