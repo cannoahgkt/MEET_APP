@@ -1,31 +1,33 @@
-import React from "react";
-
-const NumberOfEvents =({setCurrentNOE, setErrorAlert})=>{
-    const handleInputChanged =(event)=>{
-        const value = event.target.value;
-        console.log("Number is:", value);
+const NumberOfEvents = ({ setCurrentNOE, setErrorAlert }) => {
+  const handleInputChanged = (event) => {
+    const value = event.target.value;
     setCurrentNOE(value);
-        let errorText;
-        if (isNaN(value) || value <= 0) {
-          errorText = "Minimum 1 is required";
-          setErrorAlert(errorText);
-        } else {
-          setCurrentNOE(value);
-          errorText = "";
-          setErrorAlert(errorText);
-        }
+
+    if (isNaN(value)) {
+      setErrorAlert('value is not a number');
+    } else if (value > 50) {
+      setErrorAlert('maximum value is 50');
+    } else if (value <= 0) {
+      setErrorAlert('minimum value is 1');
+    } else {
+      setErrorAlert('');
+      setCurrentNOE(value);
     }
-    return (
-        <div id="number-of-events">
-          <input
-            data-testid="numberOfEventsInput"
-            type="text"
-            className="textboxNumber"
-            defaultValue="32"
-            onChange={handleInputChanged}
-          />
-        </div>
-      );
-    };
+  };
+  
+
+  
+
+  return (
+    <div id="number-of-events">
+      <input
+        type="text"
+        defaultValue="32"
+        onChange={handleInputChanged}
+        data-testid="numberOfEventsInput"
+      />
+    </div>
+  );
+};
 
 export default NumberOfEvents;
