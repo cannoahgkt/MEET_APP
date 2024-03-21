@@ -1,9 +1,10 @@
-// src/api.js
-
 import mockData from './mock-data';
 
-const accessToken = localStorage.getItem('access_token');
-
+/**
+ * Fetches token information from Google API.
+ * @param {string} accessToken The access token to check.
+ * @returns {Object} The token information.
+ */
 const checkToken = async (accessToken) => {
   const response = await fetch(
     `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
@@ -12,10 +13,15 @@ const checkToken = async (accessToken) => {
   return result;
 };
 
+/**
+ * Exchanges code for access token.
+ * @param {string} code The authorization code.
+ * @returns {string} The access token.
+ */
 const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
   const response = await fetch(
-    'YOUR_GET_ACCESS_TOKEN_ENDPOINT' + '/' + encodeCode
+    'https://us34ex2k8k.execute-api.eu-central-1.amazonaws.com/dev/api/token' + '/' + encodeCode
   );
   const { access_token } = await response.json();
   access_token && localStorage.setItem("access_token", access_token);
@@ -23,7 +29,13 @@ const getToken = async (code) => {
   return access_token;
 };
 
-const tokenCheck = accessToken && (await checkToken(accessToken));
+/**
+ * Checks if access token is valid, if not, redirects to authentication endpoint.
+ * @returns {string} The access token.
+ */
+const getAccessToken = async () => {
+  const accessToken = localStorage.getItem('access_token');
+  const tokenCheck = accessToken && (await checkToken(accessToken));
 
   if (!accessToken || tokenCheck.error) {
     await localStorage.removeItem("access_token");
@@ -31,7 +43,7 @@ const tokenCheck = accessToken && (await checkToken(accessToken));
     const code = await searchParams.get("code");
     if (!code) {
       const response = await fetch(
-        "YOUR_SERVERLESS_GET_AUTH_URL_ENDPOINT"
+        "https://us34ex2k8k.execute-api.eu-central-1.amazonaws.com/dev/api/get-auth-url"
       );
       const result = await response.json();
       const { authUrl } = result;
@@ -40,15 +52,12 @@ const tokenCheck = accessToken && (await checkToken(accessToken));
     return code && getToken(code);
   }
   return accessToken;
+};
 
-  
 /**
- *
- * @param {*} events:
- * The following function should be in the “api.js” file.
- * This function takes an events array, then uses map to create a new array with only locations.
- * It will also remove all duplicates by creating another new array using the spread operator and spreading a Set.
- * The Set will remove all duplicates from the array.
+ * Extracts unique locations from events array.
+ * @param {Array} events The array of events.
+ * @returns {Array} The array of unique locations.
  */
 export const extractLocations = (events) => {
   const extractedLocations = events.map((event) => event.location);
@@ -57,11 +66,11 @@ export const extractLocations = (events) => {
 };
 
 /**
- *
- * This function will fetch the list of all events
+ * Fetches events from AWS Lambda function.
+ * @returns {Array} The array of events.
  */
 export const getEvents = async () => {
-  if (window.location.href.startsWith("http://localhost")) {
+  if (window.location.href.startsWith("http://localhost:3000")) {
     return mockData;
   }
 
@@ -69,7 +78,7 @@ export const getEvents = async () => {
 
   if (token) {
     removeQuery();
-    const url =  "YOUR_GET_EVENTS_API_ENDPOINT" + "/" + token;
+    const url =  "https://us34ex2k8k.execute-api.eu-central-1.amazonaws.com/dev/api/get-events" + "/" + token;
     const response = await fetch(url);
     const result = await response.json();
     if (result) {
@@ -78,6 +87,9 @@ export const getEvents = async () => {
   }
 };
 
+/**
+ * Removes query parameters from URL.
+ */
 const removeQuery = () => {
   let newurl;
   if (window.history.pushState && window.location.pathname) {
@@ -91,9 +103,4 @@ const removeQuery = () => {
     newurl = window.location.protocol + "//" + window.location.host;
     window.history.pushState("", "", newurl);
   }
-};
-
-
-export const getAccessToken = async () => {
-
 };
