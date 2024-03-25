@@ -1,8 +1,8 @@
 import { loadFeature, defineFeature } from 'jest-cucumber';
 import { render, within, waitFor } from '@testing-library/react';
 import App from '../App';
-import { getEvents } from '../mock-data';
 import userEvent from '@testing-library/user-event';
+import { getEvents } from '../api';
 
 const feature = loadFeature("./src/features/filterEventsByCity.feature");
 
