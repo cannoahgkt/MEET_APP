@@ -2,7 +2,6 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 import { render, within, waitFor } from '@testing-library/react';
 import App from '../App';
 import userEvent from '@testing-library/user-event';
-import { getEvents } from '../api';
 
 const feature = loadFeature("./src/features/filterEventsByCity.feature");
 
@@ -23,8 +22,10 @@ defineFeature(feature, (test) => {
     });
 
     then("the user should see the list of upcoming events.", async () => {
+      /* eslint-disable testing-library/no-node-access */
       const AppDOM = AppComponent.container.firstChild;
       const EventListDOM = AppDOM.querySelector('#event-list');
+      /* eslint-enable testing-library/no-node-access */
 
       await waitFor(() => {
         const EventListItems = within(EventListDOM).queryAllByRole('listitem');
@@ -44,10 +45,12 @@ defineFeature(feature, (test) => {
 
     when("user starts typing in the city textbox", async () => {
       const user = userEvent.setup();
+       /* eslint-disable testing-library/no-node-access */
       const AppDOM = AppComponent.container.firstChild;
       CitySearchDOM = AppDOM.querySelector('#city-search');
       const citySearchInput = within(CitySearchDOM).queryByRole('textbox');  
       await user.type(citySearchInput, "Berlin");
+      /* eslint-enable testing-library/no-node-access */
     });
 
     then(
@@ -69,6 +72,7 @@ defineFeature(feature, (test) => {
     given("user was typing “Berlin” in the city textbox", async () => {
       AppComponent = render(<App />);
       const user = userEvent.setup();
+      /* eslint-disable no-restricted-globals */
       CitySearchDOM = screen.getByTestId("city-search");
       CitySearchInput = within(CitySearchDOM).getByRole("textbox");
       await user.type(CitySearchInput, "Berlin");
@@ -104,6 +108,7 @@ defineFeature(feature, (test) => {
           const EventListItems =
             within(EventListDOM).queryAllByRole("listitem");
           expect(EventListItems.length).toBe(17);
+          /* eslint-enable no-restricted-globals */
         });
       }
     );

@@ -1,4 +1,5 @@
 import mockData from './mock-data';
+import NProgress from "nprogress";
 
 /**
  * Fetches token information from Google API.
@@ -78,6 +79,8 @@ export const extractLocations = (events) => {
  * @returns {Array} The array of events.
  */
 export const getEvents = async () => {
+  NProgress.start();
+
   if (window.location.href.startsWith("http://localhost:3000")) {
     return mockData;
   }
