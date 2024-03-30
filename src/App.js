@@ -4,13 +4,16 @@ import NumberOfEvents from './components/NumberOfEvents';
 import { useEffect, useState } from 'react';
 import "./App.css";
 import { extractLocations, getEvents } from './api';
-import './App.css';
+import { InfoAlert, ErrorAlert, WarningAlert } from "./components/Alert";
 
 const App = () => {
   const [events, setEvents] = useState([]);
   const [currentNOE, setCurrentNOE] = useState("32");
   const [allLocations, setAllLocations] = useState([]);
   const [currentCity, setCurrentCity] = useState("See all cities");
+  const [infoAlert, setInfoAlert] = useState("");
+  const [warningAlert, setWarningAlert] = useState("");
+  const [errorAlert, setErrorAlert] = useState("");
 
  
   useEffect(() => {
@@ -22,6 +25,11 @@ const App = () => {
           : allEvents.filter((event) => event.location === currentCity);
       setEvents(filteredEvents.slice(0, currentNOE));
       setAllLocations(extractLocations(allEvents));
+      if (navigator.onLine) {
+        setWarningAlert("");
+      } else {
+        setWarningAlert("You are offline. List has been loaded from cache.");
+      }
     }
 
     fetchData();
@@ -29,8 +37,13 @@ const App = () => {
   
  return (
    <div className="App">
-     <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
-      <NumberOfEvents setCurrentNOE={setCurrentNOE}/>
+    <div className="alerts-container">
+        {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
+        {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
+        {warningAlert.length ? <WarningAlert text={warningAlert} /> : null}
+      </div>
+     <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} setInfoAlert={setInfoAlert} />
+      <NumberOfEvents currentNOE={currentNOE} setCurrentNOE={setCurrentNOE} setErrorAlert={setErrorAlert}/>
       <EventList events={events} />
    </div>
  );
