@@ -1,33 +1,32 @@
 const NumberOfEvents = ({ setCurrentNOE, setErrorAlert }) => {
-  const handleInputChanged = (event) => {
-    const value = event.target.value;
-    setCurrentNOE(value);
 
-    if (isNaN(value)) {
-      setErrorAlert('value is not a number');
-    } else if (value > 50) {
-      setErrorAlert('maximum value is 50');
-    } else if (value <= 0) {
-      setErrorAlert('minimum value is 1');
-    } else {
-      setErrorAlert('');
-      setCurrentNOE(value);
-    }
-  };
-  
+    const handleInputChanged = (event) => {
+        const value = event.target.value;
 
-  
+        // Alerts
+        let errorText;
+        if (value <= 0) {
+            errorText = "The number must be higher than 0."
+        } else {
+            errorText = ""
+        }
 
-  return (
-    <div id="number-of-events">
-      <input
-        type="text"
-        defaultValue="32"
-        onChange={handleInputChanged}
-        data-testid="numberOfEventsInput"
-      />
-    </div>
-  );
-};
+        setCurrentNOE(value);
+        setErrorAlert(errorText);
+    };
+
+    return (
+        <div id="number-of-events">
+            <label htmlFor="number-of-events-input">Number of Events: </label>
+            <input 
+            type="number"
+            id="number-of-events-input"
+            className="number-of-events-input"
+            defaultValue={32}
+            onChange={handleInputChanged}
+            />
+        </div>
+    );
+}
 
 export default NumberOfEvents;

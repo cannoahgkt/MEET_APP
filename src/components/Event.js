@@ -1,10 +1,21 @@
-// src/components/Event.js
+import { useState } from "react";
 
 const Event = ({event}) => {
-  console.log(event, "EVENT LOG")
-  return (
-  <li key={event.id}>{event?.summary}</li>
-  );
-  }
+  const [showDetails, setShowDetails] = useState(false);
+    return (
+      <li className="event">
+        <h3>{event.summary}</h3>
+        <p>{event.location}</p>
+        <p>{(new Date(event.created)).toUTCString()}</p>
+        {showDetails ?
+          <p className="details">{event.description}</p> :
+          null
+        }
+        <button className="details-btn" onClick={() => {
+          showDetails ? setShowDetails(false) : setShowDetails(true)
+        }}>{showDetails ? "hide details" : "show details"}</button>
+      </li>
+    )
+}
   
-  export default Event;
+export default Event;
