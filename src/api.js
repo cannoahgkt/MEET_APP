@@ -2,6 +2,22 @@ import mockData from './mock-data';
 import NProgress from "nprogress";
 
 /**
+ * Exchanges code for access token.
+ * @param {string} code The authorization code.
+ * @returns {string} The access token.
+ */
+const getToken = async (code) => {
+  const encodeCode = encodeURIComponent(code);
+  const response = await fetch(
+    `https://us34ex2k8k.execute-api.eu-central-1.amazonaws.com/dev/api/token/${encodeCode}`
+  );
+  const { access_token } = await response.json();
+  access_token && localStorage.setItem("access_token", access_token);
+
+  return access_token;
+};
+
+/**
  * Fetches token information from Google API.
  * @param {string} accessToken The access token to check.
  * @returns {Object} The token information.
@@ -20,22 +36,6 @@ const checkToken = async (accessToken) => {
     console.error(error);
     // Handle or throw the error as needed
   }
-};
-
-/**
- * Exchanges code for access token.
- * @param {string} code The authorization code.
- * @returns {string} The access token.
- */
-const getToken = async (code) => {
-  const encodeCode = encodeURIComponent(code);
-  const response = await fetch(
-    `https://us34ex2k8k.execute-api.eu-central-1.amazonaws.com/dev/api/token/${encodeCode}`
-  );
-  const { access_token } = await response.json();
-  access_token && localStorage.setItem("access_token", access_token);
-
-  return access_token;
 };
 
 /**
