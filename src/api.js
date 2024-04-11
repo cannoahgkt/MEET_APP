@@ -9,7 +9,9 @@ import NProgress from "nprogress";
 const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
   const response = await fetch(
-    `https://us34ex2k8k.execute-api.eu-central-1.amazonaws.com/dev/api/token/${encodeCode}`
+    "https://us34ex2k8k.execute-api.eu-central-1.amazonaws.com/dev/api/token" +
+      "/" +
+      encodeCode
   );
   const { access_token } = await response.json();
   access_token && localStorage.setItem("access_token", access_token);
@@ -95,12 +97,17 @@ export const getEvents = async () => {
 
   if (token) {
     removeQuery();
-    const url =  `https://us34ex2k8k.execute-api.eu-central-1.amazonaws.com/dev/api/get-events/${token}`;
+    const url =
+      "https://us34ex2k8k.execute-api.eu-central-1.amazonaws.com/dev/api/get-events" +
+      "/" +
+      token;
     const response = await fetch(url);
     const result = await response.json();
     if (result) {
+      NProgress.done();
+      localStorage.setItem("lastEvents", JSON.stringify(result.events));
       return result.events;
-    } else return null; 
+    } else return null;
   }
 };
 
