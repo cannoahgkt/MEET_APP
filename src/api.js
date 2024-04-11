@@ -1,11 +1,20 @@
-import mockData from './mock-data';
+import mockData from "./mock-data";
 import NProgress from "nprogress";
 
 /**
- * Exchanges code for access token.
- * @param {string} code The authorization code.
- * @returns {string} The access token.
+ *
+ * @param {*} events:
+ * The following function should be in the “api.js” file.
+ * This function takes an events array, then uses map to create a new array with only locations.
+ * It will also remove all duplicates by creating another new array using the spread operator and spreading a Set.
+ * The Set will remove all duplicates from the array.
  */
+export const extractLocations = (events) => {
+  const extractedLocations = events.map((event) => event.location);
+  const locations = [...new Set(extractedLocations)];
+  return locations;
+};
+
 const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
   const response = await fetch(
@@ -19,36 +28,12 @@ const getToken = async (code) => {
   return access_token;
 };
 
-/**
- * Fetches token information from Google API.
- * @param {string} accessToken The access token to check.
- * @returns {Object} The token information.
- */
-const checkToken = async (accessToken) => {
-  try {
-    const response = await fetch(
-      `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
-    );
-    if (!response.ok) {
-      throw new Error('Token validation failed');
-    }
-    const result = await response.json();
-    return result;
-  } catch (error) {
-    console.error(error);
-    // Handle or throw the error as needed
-  }
-};
+export const getAccessToken = async () => {
+  const accessToken = localStorage.getItem("access_token");
 
-/**
- * Checks if access token is valid, if not, redirects to authentication endpoint.
- * @returns {string} The access token.
- */
-const getAccessToken = async () => {
-  const accessToken = localStorage.getItem('access_token');
   const tokenCheck = accessToken && (await checkToken(accessToken));
 
-  if (!accessToken || tokenCheck.error) {
+  if (!accessToken || (tokenCheck && tokenCheck.error)) {
     await localStorage.removeItem("access_token");
     const searchParams = new URLSearchParams(window.location.search);
     const code = await searchParams.get("code");
@@ -65,21 +50,29 @@ const getAccessToken = async () => {
   return accessToken;
 };
 
-/**
- * Extracts unique locations from events array.
- * @param {Array} events The array of events.
- * @returns {Array} The array of unique locations.
- */
-export const extractLocations = (events) => {
-  const extractedLocations = events.map((event) => event.location);
-  const locations = [...new Set(extractedLocations)];
-  return locations;
+const checkToken = async (accessToken) => {
+  const response = await fetch(
+    `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
+  );
+  const result = await response.json();
+  return result;
 };
 
-/**
- * Fetches events from AWS Lambda function.
- * @returns {Array} The array of events.
- */
+const removeQuery = () => {
+  let newurl;
+  if (window.history.pushState && window.location.pathname) {
+    newurl =
+      window.location.protocol +
+      "//" +
+      window.location.host +
+      window.location.pathname;
+    window.history.pushState("", "", newurl);
+  } else {
+    newurl = window.location.protocol + "//" + window.location.host;
+    window.history.pushState("", "", newurl);
+  }
+};
+
 export const getEvents = async () => {
   NProgress.start();
 
@@ -90,7 +83,7 @@ export const getEvents = async () => {
   if (!navigator.onLine) {
     const events = localStorage.getItem("lastEvents");
     NProgress.done();
-    return events?JSON.parse(events):[];
+    return events ? JSON.parse(events) : [];
   }
 
   const token = await getAccessToken();
@@ -108,23 +101,5 @@ export const getEvents = async () => {
       localStorage.setItem("lastEvents", JSON.stringify(result.events));
       return result.events;
     } else return null;
-  }
-};
-
-/**
- * Removes query parameters from URL.
- */
-const removeQuery = () => {
-  let newurl;
-  if (window.history.pushState && window.location.pathname) {
-    newurl =
-      window.location.protocol +
-      "//" +
-      window.location.host +
-      window.location.pathname;
-    window.history.pushState("", "", newurl);
-  } else {
-    newurl = window.location.protocol + "//" + window.location.host;
-    window.history.pushState("", "", newurl);
   }
 };
