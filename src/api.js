@@ -27,7 +27,7 @@ const getToken = async (code) => {
 
   return access_token;
 };
-
+/*test*/
 export const getAccessToken = async () => {
   const accessToken = localStorage.getItem("access_token");
 
