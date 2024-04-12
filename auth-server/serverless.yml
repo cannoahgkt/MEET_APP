@@ -6,9 +6,9 @@ provider:
   region: eu-central-1
   timeout: 30
   environment:
-    CLIENT_ID: ${file(config.json):CLIENT_ID}
-    CLIENT_SECRET: ${file(config.json):CLIENT_SECRET}
-    CALENDAR_ID: ${file(config.json):CALENDAR_ID}
+    CLIENT_ID: ${file(private-config.json):CLIENT_ID}
+    CLIENT_SECRET: ${file(private-config.json):CLIENT_SECRET}
+    CALENDAR_ID: ${file(public-config.json):CALENDAR_ID}
 functions:
   getAuthURL:
     handler: handler.getAuthURL
